@@ -6,6 +6,15 @@ class G:
         self.A : set  = a
         self.P : dict = p
         self.S : str  = s
+        self.P_assotioate: list = []
+        for key in p:
+            for rule in p[key]:
+                self.P_assotioate.append((rule[1], key))
+        self.P_assotioate.sort()
+        self.P_assotioate = [el[1] for el in self.P_assotioate]
+
+
+
 
     def input_n(self):
         print("Введите конечное множество нетерминальных символов", end=": ")
@@ -21,6 +30,7 @@ class G:
 
     def input_p(self):
         self.P.clear()
+        self.P_assotioate.clear()
         print("Введите колличество правил", end=": ")
         count_p = int(input())
         print("Введите %d правил:" % count_p)
@@ -30,6 +40,7 @@ class G:
             value = list_rule[1]
             if key in self.P.keys():
                 self.P[key].append([value, i])
+                self.P_assotioate.append(key)
             else:
                 self.P.update({key: [[value, i]]}.copy())
 
@@ -73,6 +84,37 @@ class G:
 
             chain = newChain
         return chain
+    def get_non_terminal_for_num_rule(self, num_rule) -> str:
+        return self.P_assotioate[num_rule - 1]
+
+    def check_rules(self, rules):
+        chain = self.S
+        for rule in rules:
+            non_term = self.get_non_terminal_for_num_rule(rule)
+            if non_term in chain:
+                current_rule = list(filter(lambda el: el[1]==rule, self.P[non_term]))[0]
+                chain = chain.replace(non_term, current_rule[0], 1)
+            else:
+                return False
+        return True
+
+    def check_left_rules(self, rules):
+        chain = self.S
+        for rule in rules:
+            newChain = ""
+            flag = True
+            for ch in chain:
+                if (ch in self.N) and flag:
+                    current_rule = list(filter(lambda el: el[1] == rule,self.P[ch]))
+                    flag = False
+                    if current_rule != []:
+                        newChain+= current_rule[0][0]
+                    else:
+                        return False
+                else:
+                    newChain += ch
+            chain = newChain
+        return True
 
 
     def left_vivod(self):
