@@ -40,10 +40,9 @@ class G:
             value = list_rule[1]
             if key in self.P.keys():
                 self.P[key].append([value, i])
-                for _ in self.P[key]:
-                    self.P_assotioate.append(key)
             else:
                 self.P.update({key: [[value, i]]}.copy())
+            self.P_assotioate.append(key)
 
     def input_s(self):
         print("Введите начальный нетерминал", end=": ")
