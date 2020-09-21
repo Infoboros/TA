@@ -1,7 +1,14 @@
 import unittest
 
 from G import G
-
+S->SAS
+S->A
+A->aA
+A->AB
+A->b
+B->bB
+B->bBaB
+B->a
 
 class GTest(unittest.TestCase):
     def setUp(self) -> None:

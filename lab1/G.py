@@ -40,7 +40,8 @@ class G:
             value = list_rule[1]
             if key in self.P.keys():
                 self.P[key].append([value, i])
-                self.P_assotioate.append(key)
+                for _ in self.P[key]:
+                    self.P_assotioate.append(key)
             else:
                 self.P.update({key: [[value, i]]}.copy())
 
@@ -84,6 +85,7 @@ class G:
 
             chain = newChain
         return chain
+
     def get_non_terminal_for_num_rule(self, num_rule) -> str:
         return self.P_assotioate[num_rule - 1]
 
@@ -138,7 +140,8 @@ class G:
                     print("Можно применить правила:")
                     print("\n".join(rules))
 
-                    rule = choices(self.P[ch])[0]
+                    num = int(input())
+                    rule = list(filter(lambda el: el[1]==num, self.P[ch]))[0]
                     print("Применяем правило %d" % rule[1])
                     step_by_step.append(rule)
                     newChain += rule[0]
