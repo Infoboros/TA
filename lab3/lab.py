@@ -14,8 +14,22 @@ class Recognizer:
         self.TABLE = [[2, -2, 3, 2],  # Апостроф
                       [-1, -2, 2, 0],  # Плюс
                       [-1, -2, 1, -3]]  # Диез
-        self.TABLE.append([[-1, 2, 2, -3] for i in range(0, 8)])  # Восьмиричные числа
-        self.TABLE.append([[-1, -2, 2, -3] for ch in self.ELSE])  # Все остальные символы
+        self.TABLE += [[-1, 2, 2, -3] for i in range(0, 8)]  # Восьмиричные числа
+        self.TABLE += [[-1, -2, 2, -3] for ch in self.ELSE]  # Все остальные символы
+
+        self.L = {
+            "'":0,
+            "+":1,
+            "#":2
+        }
+        index = 3
+        for ch in range(0, 8):
+            self.L.update({str(ch): index})
+            index += 1
+        for ch in self.ELSE:
+            self.L.update({str(ch): index})
+            index += 1
+
 
     ERROR_DICT = {
         -1: 'Часть строки должна начинаться с апострофа',
@@ -27,7 +41,8 @@ class Recognizer:
     PLUS = '+'
     DIEZ = '#'
     EIGTH_DIGIT = '01234567'
-    ELSE = 'йцукенгшщзхъэждлорпавыфячсмитьбю.,-!"№;%:?*()_=' #Множество всех входных символов за исключением тех что выше
+    ELSE = 'йцукенгшщзхъэждлорпавыфячсмитьбю.,-!"№;%:?*()_=' \
+           'qwertyuiop[];lkjhgf dsa' #Множество всех входных символов за исключением тех что выше
 
     def _S0(self, chain: str):
         if not chain:
@@ -71,6 +86,12 @@ class Recognizer:
 
     def check_inter(self, chain: str):
         S = 0
+        for ch in chain:
+            if S < 0:
+                raise RecognizeException(self.ERROR_DICT[S])
+            S = self.TABLE[self.L[ch]][S]
+            print(S)
+        return self.YES if S==3 else self.NO
 
     def check_comp(self, chain: str):
         return self._S0(chain)
@@ -94,7 +115,7 @@ if __name__ == '__main__':
         if flag == 1:
             print(recognizer.check_comp(chain))
         elif flag == 2:
-            print(recognizer.TABLE)
+            print(recognizer.check_inter(chain))
 
     elif flag == 2:
         pass
