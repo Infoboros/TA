@@ -31,7 +31,8 @@ class MP:
         'Z': {
             '{': RULES[1],
             'a': RULES[1],
-            '$': RULES[2]
+            '$': RULES[2],
+            ']': RULES[2]
         },
 
         'O': {
@@ -119,8 +120,8 @@ class Recurse:
             print(f'Z -> {FIRST[inSym]}')
             self.parse(FIRST[inSym])
         except:
-            if not self.chain:
-                print('Цепочка принадлежит языку')
+            if self.chain[0] in ']$':
+                print(f'Z -> e')
             else:
                 raise MP.ParseError()  # В данном случае из нетерминала не выводится пустая цепочка
 
@@ -211,14 +212,15 @@ class Recurse:
 
 if __name__ == '__main__':
     print('Введите цепочку:', end=' ')
-    # chain = input()
-    chain = 'a=*(a,a)'
+    chain = input()
+    # chain = 'a=a*(a,a)'
+
     print('Выберите реализацию:')
     print('1 - низходящий МП-распознаватель')
     print('2 - метод рекурсивного спуска')
 
-    # flag = int(input())
-    flag = 2
+    flag = int(input())
+    # flag = 2
     if flag == 1:
         try:
             MP().check(chain)
@@ -227,6 +229,7 @@ if __name__ == '__main__':
             print(e)
     else:
         try:
-            Recurse(chain).S()
+            Recurse(chain+'$').S()
+            print('Цепочка принадлежит языку')
         except Exception as e:
             print(e)
