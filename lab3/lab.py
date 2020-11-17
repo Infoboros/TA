@@ -42,7 +42,7 @@ class Recognizer:
     DIEZ = '#'
     EIGTH_DIGIT = '01234567'
     ELSE = 'йцукенгшщзхъэждлорпавыфячсмитьбю.,-!"№;%:?*()_=' \
-           'qwertyuiop[];lkjhgf dsa' #Множество всех входных символов за исключением тех что выше
+           'qwertyubiop[];lkjhgf dsa' #Множество всех входных символов за исключением тех что выше
 
     def _S0(self, chain: str):
         if not chain:
@@ -90,7 +90,6 @@ class Recognizer:
             if S < 0:
                 raise RecognizeException(self.ERROR_DICT[S])
             S = self.TABLE[self.L[ch]][S]
-            print(S)
         return self.YES if S==3 else self.NO
 
     def check_comp(self, chain: str):
@@ -103,7 +102,7 @@ if __name__ == '__main__':
     print('1 - консоль')
     print('2 - файл')
 
-    flag = 1
+    flag = int(input())
     if flag == 1:
         print('Введите цепочку', end=' ')
         chain = input()
@@ -111,11 +110,44 @@ if __name__ == '__main__':
         print('Выберите тип реализации')
         print('1 - компиляционный')
         print('2 - интерпретационный')
-        flag = 2
+        flag = int(input())
         if flag == 1:
             print(recognizer.check_comp(chain))
         elif flag == 2:
             print(recognizer.check_inter(chain))
 
     elif flag == 2:
-        pass
+        print('Введите путь к файлу')
+        path = input()
+
+        print('Введите ')
+        print('1 - что бы удалить из файла все недопустимые цепочки')
+        print('2 - что бы удалить из файла все допустимые цепочки')
+        flag = int(input())
+
+        with open(path) as f:
+            all_chain = f.read().split('\n')
+        delete_chain = []
+        if flag == 1:
+            for chain in all_chain:
+                print(chain)
+                try:
+                    print(recognizer.check_comp(chain))
+                except:
+                    print('отвергнуть')
+                    delete_chain.append(chain)
+        if flag == 2:
+            for chain in all_chain:
+                print(chain)
+                try:
+                    print(recognizer.check_comp(chain))
+                except:
+                    print('отвергнуть')
+                    continue
+                delete_chain.append(chain)
+        with open(path, 'w') as f:
+            for chain in all_chain:
+                if chain not in delete_chain:
+                    f.write(chain+'\n')
+
+
